@@ -10,8 +10,10 @@ from msrest.authentication import CognitiveServicesCredentials
 # Initialize CosmosDB client
 url = os.environ.get("COSMOS_DB_URL")
 key = os.environ.get("COSMOS_DB_KEY")
-subscription_key = os.environ.get("SUBSCRIPTION_KEY")
-endpoint = os.environ.get("ENDPOINT")
+#subscription_key = os.environ.get("SUBSCRIPTION_KEY")
+#endpoint = os.environ.get("ENDPOINT")
+subscription_key = "fuckoff"
+endpoint = "cunt"
 
 client = CosmosClient(url, credential=key)
 database = client.get_database_client('quiplash')
@@ -67,9 +69,10 @@ def main(req:HttpRequest) ->HttpResponse:
             mimetype="application/json",
         )
 
-    except Exception:
+    except Exception as e:
+        print(e)
         return HttpResponse(
-            json.dumps({"result": False, "msg": "Bad Request: Unable to get JSON"}),
+            json.dumps({"result": False, "msg": "Bad Request:" + str(e)}),
             mimetype="application/json",
             status_code=500,
         )
