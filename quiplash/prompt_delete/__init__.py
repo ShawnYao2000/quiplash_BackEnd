@@ -1,4 +1,5 @@
 import os
+import re
 import json
 from azure.cosmos import CosmosClient
 from azure.functions import HttpRequest, HttpResponse
@@ -21,7 +22,7 @@ def main(req: HttpRequest) -> HttpResponse:
         if not (set(body.keys()) - {"player", "word"}):
             if "player" in body:
                 username = body["player"]
-                #If only player presented
+                # If only player presented
 
                 query = f"SELECT * FROM player p WHERE p.username = '{username}'"
                 items = list(player_container.query_items(query, enable_cross_partition_query=True))
@@ -43,10 +44,30 @@ def main(req: HttpRequest) -> HttpResponse:
                         mimetype="application/json"
                     )
 
+            # ----------------------------------------------
 
             if "word" in body:
                 word = body["word"]
-                #If only word presented
+                # If only word presented
+                word_pattern = f"\\b{word}\\b"  # This is a regular expression pattern to match a word boundary
+
+                # Query all prompts
+                query = "SELECT * FROM prompt p WHERE p.username IS NOT NULL"
+                prompt_items = list(prompt_container.query_items(query=query, enable_cross_partition_query=True))
+                deletedCount = 0
+                for item in prompt_items:
+                    # Check each 'text' with 'language' as 'en'
+                    for text_obj in item.get("texts", []):
+                        if text_obj["language"] == "en" and re.search(word_pattern, text_obj["texts"]):
+                            # Delete the item and increment the counter
+                            prompt_container.delete_item(item, partition_key=item['username'])
+                            deletedCount += 1
+                            break  # No need to check other texts of this item
+
+                return HttpResponse(
+                    json.dumps({"result": True, "msg": f"'{deletedCount}' prompts deleted"}),
+                    mimetype="application/json"
+                )
 
         else:
             return HttpResponse(
@@ -57,7 +78,7 @@ def main(req: HttpRequest) -> HttpResponse:
 
     except Exception as e:
         return HttpResponse(
-            json.dumps({"result":False, "msg": "Bad Request:" + str(e)}),
+            json.dumps({"result": False, "msg": "Bad Request:" + str(e)}),
             mimetype="application/json",
             status_code=500
         )
