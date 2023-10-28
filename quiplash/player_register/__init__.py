@@ -4,8 +4,8 @@ from azure.cosmos import CosmosClient
 from azure.functions import HttpRequest, HttpResponse
 
 # Initialize CosmosDB client
-url = 'https://shawn.documents.azure.com:443/'
-key = 'U1mCbeWIMgLI5boKiwzNDAg8rbv3DoWRUCOi27BuFlkdBMnIf7uR7jXwfAHYX6ZtbBeq8xGhUXpiACDbv0L8Yg=='
+url = os.environ.get("COSMOS_DB_URL")
+key = os.environ.get("COSMOS_DB_KEY")
 client = CosmosClient(url, credential=key)
 database = client.get_database_client('quiplash')
 player_container = database.get_container_client('player')

@@ -1,7 +1,9 @@
 {
-    "IsEncrypted": false,
-    "Values": {
-        "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=your_account_name;AccountKey=your_account_key;EndpointSuffix=core.windows.net",
-        "FUNCTIONS_WORKER_RUNTIME": "python"
-    }
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "<your_storage_account_connection_string>",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "COSMOS_DB_URL": "https://shawn.documents.azure.com:443/",
+    "COSMOS_DB_KEY": "U1mCbeWIMgLI5boKiwzNDAg8rbv3DoWRUCOi27BuFlkdBMnIf7uR7jXwfAHYX6ZtbBeq8xGhUXpiACDbv0L8Yg=="
+  }
 }
