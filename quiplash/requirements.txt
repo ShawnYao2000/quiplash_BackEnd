@@ -1,1 +1,1 @@
-quiplash
+azure-cosmos==4.5.1

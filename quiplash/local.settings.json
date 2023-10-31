@@ -1,11 +1,10 @@
 {
   "IsEncrypted": false,
   "Values": {
-    "AzureWebJobsStorage": "<your_storage_account_connection_string>",
     "FUNCTIONS_WORKER_RUNTIME": "python",
-    "COSMOS_DB_URL": "https://shawn.documents.azure.com:443/",
-    "COSMOS_DB_KEY": "CtbvW7YGauhT92TK1Lkz5IHsaQVhrpxzLPcu9353Xn6wv4PUnpaf2PaGCn1a741QdUxjlUb0NmyKACDbFq4ixA==",
-    "ENDPOINT": "api.cognitive.microsofttranslator.com",
-    "SUBSCRIPTION_KEY": "a17f0acbb6af453ab7e09faba3f9a0e0"
+    "COSMOS_DB_URL": "https://shawnyao.documents.azure.com:443/",
+    "COSMOS_DB_KEY": "FqfMCJj36XmqZxtkZEN9HhUGPkhR17C4bfQgJ6BZsgkPidgb8CCDeuM9xb6cjGj64wUUQDHqLB2yACDbBwJlGw==",
+    "ENDPOINT": "https://api.cognitive.microsofttranslator.com/",
+    "SUBSCRIPTION_KEY": "2ee1de311acf4c4e977350bc72e17b46"
   }
 }

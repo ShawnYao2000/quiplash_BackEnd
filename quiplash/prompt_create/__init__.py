@@ -10,10 +10,8 @@ from msrest.authentication import CognitiveServicesCredentials
 # Initialize CosmosDB client
 url = os.environ.get("COSMOS_DB_URL")
 key = os.environ.get("COSMOS_DB_KEY")
-#subscription_key = os.environ.get("SUBSCRIPTION_KEY")
-#endpoint = os.environ.get("ENDPOINT")
-subscription_key = "fuckoff"
-endpoint = "cunt"
+subscription_key = os.environ.get("SUBSCRIPTION_KEY")
+endpoint = os.environ.get("ENDPOINT")
 
 client = CosmosClient(url, credential=key)
 database = client.get_database_client('quiplash')
