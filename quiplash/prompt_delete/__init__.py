@@ -49,7 +49,7 @@ def main(req: HttpRequest) -> HttpResponse:
             if "word" in body:
                 word = body["word"]
                 # If only word presented
-                word_pattern = f"\\b{word}\\b"  # This is a regular expression pattern to match a word boundary
+                word_pattern = f"(?<=^|[^\\w-]){word}(?=$|[^\\w-])"  # This is a regular expression pattern to match a word boundary
 
                 # Query all prompts
                 query = "SELECT * FROM prompt p WHERE p.username IS NOT NULL"
