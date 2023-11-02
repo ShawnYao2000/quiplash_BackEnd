@@ -43,3 +43,4 @@ def main(req: HttpRequest) -> HttpResponse:
             mimetype="application/json",
             status_code=500
         )
+
