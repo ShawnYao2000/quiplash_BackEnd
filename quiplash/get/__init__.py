@@ -3,13 +3,12 @@ import json
 from azure.cosmos import CosmosClient
 from azure.functions import HttpRequest, HttpResponse
 
-url = os.environ.get("COSMOS_DB_URL")
-key = os.environ.get("COSMOS_DB_KEY")
+url = os.environ["COSMOS_DB_URL"]
+key = os.environ["COSMOS_DB_KEY"]
 
 client = CosmosClient(url, credential=key)
-database = client.get_database_client('quiplash')
+database = client.get_database_client('quiplashdb')
 prompt_container = database.get_container_client('prompt')
-player_container = database.get_container_client('player')
 
 def main(req: HttpRequest) -> HttpResponse:
     try:
@@ -17,18 +16,21 @@ def main(req: HttpRequest) -> HttpResponse:
         players = body["player"]
         language = body["language"]
 
-        result = []  # This will store the combined results
+        result = []
 
         for p in players:
-            query = f"SELECT * FROM prompt p WHERE p.username = '{p}' AND ARRAY_CONTAINS({{'language': '{language}'}}, p.texts)"
+            # Project only the necessary fields and filter the texts by the correct language
+            query = f"SELECT c.id, t.text, c.username FROM c JOIN t IN c.texts WHERE c.username = '{p}' AND t.language = '{language}'"
             player_prompts = list(prompt_container.query_items(query, enable_cross_partition_query=True))
 
-            # If you want each player's prompts in a separate object:
-            player_result = {
-                "text": player_prompts,
-                "username": p
-            }
-            result.append(player_result)
+            # Flatten the results to match the expected output
+            for prompt in player_prompts:
+                player_result = {
+                    "id": prompt['id'],
+                    "text": prompt['text'],  # This now directly gets the text for the correct language
+                    "username": prompt['username']
+                }
+                result.append(player_result)
 
         return HttpResponse(
             json.dumps(result),
@@ -37,7 +39,7 @@ def main(req: HttpRequest) -> HttpResponse:
 
     except Exception as e:
         return HttpResponse(
-            json.dumps({"result":False, "msg": "Bad Request:" + str(e)}),
+            json.dumps({"result": False, "msg": "Bad Request: " + str(e)}),
             mimetype="application/json",
             status_code=500
         )

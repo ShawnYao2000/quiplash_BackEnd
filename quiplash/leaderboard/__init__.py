@@ -8,7 +8,7 @@ url = os.environ.get("COSMOS_DB_URL")
 key = os.environ.get("COSMOS_DB_KEY")
 
 client = CosmosClient(url, credential=key)
-database = client.get_database_client('quiplash')
+database = client.get_database_client('quiplashdb')
 prompt_container = database.get_container_client('prompt')
 player_container = database.get_container_client('player')
 

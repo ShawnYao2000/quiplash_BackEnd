@@ -2,9 +2,12 @@
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "python",
-    "COSMOS_DB_URL": "https://shawnyao.documents.azure.com:443/",
-    "COSMOS_DB_KEY": "FqfMCJj36XmqZxtkZEN9HhUGPkhR17C4bfQgJ6BZsgkPidgb8CCDeuM9xb6cjGj64wUUQDHqLB2yACDbBwJlGw==",
-    "ENDPOINT": "https://api.cognitive.microsofttranslator.com/",
-    "SUBSCRIPTION_KEY": "2ee1de311acf4c4e977350bc72e17b46"
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "COSMOS_DB_URL": "https://sy1g21-quiplash.documents.azure.com:443/",
+    "COSMOS_DB_KEY": "nojxN7ZQZsTdQKUpK8D7mZVqV2DUSqYtIgiCxeEu5zuam8BBFY13SmZsS8WKyMDTZqRC4MBXeA5fACDbHUhapg==",
+    "TRANSLATOR_TEXT_SUBSCRIPTION_KEY": "4c4d10c9912f44ce9c38ba16924b1ba9",
+    "TRANSLATOR_TEXT_ENDPOINT": "https://api.cognitive.microsofttranslator.com/",
+    "TRANSLATOR_TEXT_LOCATION": "uksouth",
+    "SUPPORTED_LANG": "['en', 'es', 'it', 'sv', 'ru', 'id', 'bg', 'zh-Hans']"
   }
 }

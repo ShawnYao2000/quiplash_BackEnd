@@ -9,7 +9,7 @@ url = os.environ.get("COSMOS_DB_URL")
 key = os.environ.get("COSMOS_DB_KEY")
 
 client = CosmosClient(url, credential=key)
-database = client.get_database_client('quiplash')
+database = client.get_database_client('quiplashdb')
 prompt_container = database.get_container_client('prompt')
 player_container = database.get_container_client('player')
 
@@ -22,11 +22,9 @@ def main(req: HttpRequest) -> HttpResponse:
         if not (set(body.keys()) - {"player", "word"}):
             if "player" in body:
                 username = body["player"]
-                # If only player presented
-
+                # If delete player
                 query = f"SELECT * FROM player p WHERE p.username = '{username}'"
                 items = list(player_container.query_items(query, enable_cross_partition_query=True))
-
                 if len(items) == 0:
                     return HttpResponse(
                         json.dumps({"result": False, "msg": "Player does not exist"}),
@@ -47,27 +45,31 @@ def main(req: HttpRequest) -> HttpResponse:
             # ----------------------------------------------
 
             if "word" in body:
-                word = body["word"]
-                # If only word presented
-                word_pattern = f"(?<=^|[^\\w-]){word}(?=$|[^\\w-])"  # This is a regular expression pattern to match a word boundary
+                word_to_delete = body["word"]
+                # Regex pattern for whole word match, case-sensitive, only in English text
+                pattern = fr'\b{re.escape(word_to_delete)}\b'
 
-                # Query all prompts
-                query = "SELECT * FROM prompt p WHERE p.username IS NOT NULL"
-                prompt_items = list(prompt_container.query_items(query=query, enable_cross_partition_query=True))
+                # Query to fetch all prompts as Cosmos DB may not support regex within the query
+                prompts = list(prompt_container.query_items(
+                    query="SELECT * FROM prompt p",
+                    enable_cross_partition_query=True
+                ))
                 deletedCount = 0
-                for item in prompt_items:
-                    # Check each 'text' with 'language' as 'en'
-                    for text_obj in item.get("texts", []):
-                        if text_obj["language"] == "en" and re.search(word_pattern, text_obj["texts"]):
-                            # Delete the item and increment the counter
-                            prompt_container.delete_item(item, partition_key=item['username'])
-                            deletedCount += 1
-                            break  # No need to check other texts of this item
 
+                for prompt in prompts:
+                    # Filter only English texts
+                    english_texts = [text for text in prompt['texts'] if text['language'] == 'en']
+                    # Check if the word is present in any English text
+                    if any(re.search(pattern, text_entry['text']) for text_entry in english_texts):
+                        prompt_container.delete_item(prompt['id'], partition_key=prompt['username'])
+                        deletedCount += 1
+
+                # Return the HTTP response
                 return HttpResponse(
-                    json.dumps({"result": True, "msg": f"'{deletedCount}' prompts deleted"}),
+                    json.dumps({"result": True, "msg": f"{deletedCount} prompts deleted"}),
                     mimetype="application/json"
                 )
+
 
         else:
             return HttpResponse(
@@ -78,7 +80,8 @@ def main(req: HttpRequest) -> HttpResponse:
 
     except Exception as e:
         return HttpResponse(
-            json.dumps({"result": False, "msg": "Bad Request:" + str(e)}),
+            json.dumps({"result": False, "msg": "Bad Request: " + str(e)}),
             mimetype="application/json",
-            status_code=500
+            status_code=500  # Indicating an Internal Server Error
         )
+

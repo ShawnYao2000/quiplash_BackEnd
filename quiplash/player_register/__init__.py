@@ -2,12 +2,13 @@ import os
 import json
 from azure.cosmos import CosmosClient
 from azure.functions import HttpRequest, HttpResponse
+import uuid
 
 # Initialize CosmosDB client
 url = os.environ.get("COSMOS_DB_URL")
 key = os.environ.get("COSMOS_DB_KEY")
 client = CosmosClient(url, credential=key)
-database = client.get_database_client('quiplash')
+database = client.get_database_client('quiplashdb')
 player_container = database.get_container_client('player')
 
 
@@ -38,13 +39,14 @@ def main(req: HttpRequest) -> HttpResponse:
                                 mimetype="application/json")
 
         # If all checks pass, add the new player to the database
+        unique_id = str(uuid.uuid4())
         player_data = {
             "username": username,
             "password": password,
             "games_played": 0,
             "total_score": 0
         }
-        player_container.create_item(body=player_data)
+        player_container.create_item(body=player_data, enable_automatic_id_generation=True)
 
         return HttpResponse(json.dumps({"result": True, "msg": "OK"}), mimetype="application/json")
 

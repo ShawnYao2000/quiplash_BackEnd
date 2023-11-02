@@ -7,27 +7,16 @@ from azure.cosmos import CosmosClient
 url = os.environ.get("COSMOS_DB_URL")
 key = os.environ.get("COSMOS_DB_KEY")
 client = CosmosClient(url, credential=key)
-database = client.get_database_client('quiplash')
+database = client.get_database_client('quiplashdb')
 player_container = database.get_container_client('player')
 
 
 def main(req: HttpRequest) -> HttpResponse:
     if req.method == "GET":
         # Handle GET request with query parameters
-        username = req.params.get("username")
-        password = req.params.get("password")
-    elif req.method == "POST":
-        # Handle POST request with JSON body
-        try:
-            body = req.get_json()
-            username = body["username"]
-            password = body["password"]
-        except ValueError:
-            return HttpResponse(
-                json.dumps({"result": False, "msg": "Invalid JSON in request body"}),
-                mimetype="application/json",
-                status_code=400,
-            )
+        body = req.get_json()
+        username = body["username"]
+        password = body["password"]
     else:
         return HttpResponse(
             json.dumps({"result": False, "msg": "Unsupported HTTP method"}),

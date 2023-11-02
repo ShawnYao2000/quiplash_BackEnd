@@ -1,24 +1,25 @@
 import os
 import json
+
 from azure.cosmos import CosmosClient
 from azure.functions import HttpRequest, HttpResponse
-from azure.cognitiveservices.language.textanalytics import TextAnalyticsClient
-from azure.cognitiveservices.language.textanalytics.models import DetectedLanguage
-from msrest.authentication import CognitiveServicesCredentials
+from ..shared_code import detect_lang, translate_lang
 
 
 # Initialize CosmosDB client
 url = os.environ.get("COSMOS_DB_URL")
 key = os.environ.get("COSMOS_DB_KEY")
-subscription_key = os.environ.get("SUBSCRIPTION_KEY")
-endpoint = os.environ.get("ENDPOINT")
+
+# Initialize translation service
+translator_key = os.environ.get("TRANSLATOR_TEXT_SUBSCRIPTION_KEY")
+translator_endpoint = os.environ.get("TRANSLATOR_TEXT_ENDPOINT")
+translator_location = os.environ.get("TRANSLATOR_TEXT_LOCATION")
 
 client = CosmosClient(url, credential=key)
-database = client.get_database_client('quiplash')
+database = client.get_database_client('quiplashdb')
 prompt_container = database.get_container_client('prompt')
 player_container = database.get_container_client('player')
-
-text_analytics_client = TextAnalyticsClient(endpoint, credentials=CognitiveServicesCredentials(subscription_key))
+supported_lang = ['en', 'es', 'it', 'sv', 'ru', 'id', 'bg', 'zh-Hans']
 
 #{id: "", username: "", texts: [{"language": "en", "text": "blahblah"}]}
 
@@ -28,10 +29,9 @@ def main(req:HttpRequest) ->HttpResponse:
         text = body["text"]
         username = body["username"]
 
-        documents = [DetectedLanguage(id="1", text = text)]
-        result = text_analytics_client.detect_language(documents=documents)
-        detected_language = result.documents[0].detected_languages[0].name
-        confidence = result.documents[0].detected_languages[0].score
+        textDetect = detect_lang(text)
+        detected_language = textDetect[0]
+        confidence = textDetect[1]
 
         if len(text) < 15 or len(text) >80:
             return HttpResponse(
@@ -40,9 +40,9 @@ def main(req:HttpRequest) ->HttpResponse:
                 status_code=200,
             )
 
-        if detected_language not in ['en', 'es'] or (detected_language in ['en', 'es'] and confidence < 0.8):
+        if detected_language not in supported_lang or (detected_language in supported_lang and confidence < 0.3):
             return HttpResponse(
-                json.dumps({"result": False, "msg": "Unsupported language"}),
+                json.dumps({"result": False, "msg": "Unsupported language or insufficient confidence"}),
                 mimetype="application/json",
                 status_code=200,
             )
@@ -57,11 +57,15 @@ def main(req:HttpRequest) ->HttpResponse:
             )
 
         #passed all checks
+
+        #construct insertion
+        translated_lang = translate_lang(text, detected_language)
+
         prompt_data = {
-            "text": text,
+            "texts": translated_lang,
             "username": username
         }
-        prompt_container.create_item(body=prompt_data)
+        prompt_container.create_item(body=prompt_data, enable_automatic_id_generation=True)
         return HttpResponse(
             json.dumps({"result": True, "msg": "OK"}),
             mimetype="application/json",
