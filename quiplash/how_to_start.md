@@ -54,4 +54,3 @@ Follow these steps to set up the Quiplash project:
 
 ### Telemetry
 
-Azure Functions Core Tools collects anonymous telemetry data to improve user experience. To opt-out, set the environment variable `FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT` to '1' or 'true'.
