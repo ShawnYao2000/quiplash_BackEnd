@@ -1,5 +1,4 @@
 {
-  "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "python",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
@@ -8,6 +7,7 @@
     "TRANSLATOR_TEXT_SUBSCRIPTION_KEY": "4c4d10c9912f44ce9c38ba16924b1ba9",
     "TRANSLATOR_TEXT_ENDPOINT": "https://api.cognitive.microsofttranslator.com/",
     "TRANSLATOR_TEXT_LOCATION": "uksouth",
-    "SUPPORTED_LANG": "['en', 'es', 'it', 'sv', 'ru', 'id', 'bg', 'zh-Hans']"
-  }
+    "AzureWebJobs.leaderboard.Disabled": "false"
+  },
+  "IsEncrypted": false
 }

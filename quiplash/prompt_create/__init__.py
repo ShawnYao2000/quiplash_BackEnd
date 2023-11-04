@@ -7,13 +7,13 @@ from ..shared_code import detect_lang, translate_lang
 
 
 # Initialize CosmosDB client
-url = os.environ.get("COSMOS_DB_URL")
-key = os.environ.get("COSMOS_DB_KEY")
+url = "https://sy1g21-quiplash.documents.azure.com:443/"
+key = "nojxN7ZQZsTdQKUpK8D7mZVqV2DUSqYtIgiCxeEu5zuam8BBFY13SmZsS8WKyMDTZqRC4MBXeA5fACDbHUhapg=="
 
 # Initialize translation service
-translator_key = os.environ.get("TRANSLATOR_TEXT_SUBSCRIPTION_KEY")
-translator_endpoint = os.environ.get("TRANSLATOR_TEXT_ENDPOINT")
-translator_location = os.environ.get("TRANSLATOR_TEXT_LOCATION")
+translator_key = "4c4d10c9912f44ce9c38ba16924b1ba9"
+translator_endpoint = "https://api.cognitive.microsofttranslator.com/"
+translator_location = "uksouth"
 
 client = CosmosClient(url, credential=key)
 database = client.get_database_client('quiplashdb')

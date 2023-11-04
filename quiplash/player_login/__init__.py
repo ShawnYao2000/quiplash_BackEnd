@@ -4,8 +4,8 @@ from azure.functions import HttpRequest, HttpResponse
 from azure.cosmos import CosmosClient
 
 
-url = os.environ.get("COSMOS_DB_URL")
-key = os.environ.get("COSMOS_DB_KEY")
+url = "https://sy1g21-quiplash.documents.azure.com:443/"
+key = "nojxN7ZQZsTdQKUpK8D7mZVqV2DUSqYtIgiCxeEu5zuam8BBFY13SmZsS8WKyMDTZqRC4MBXeA5fACDbHUhapg=="
 client = CosmosClient(url, credential=key)
 database = client.get_database_client('quiplashdb')
 player_container = database.get_container_client('player')
