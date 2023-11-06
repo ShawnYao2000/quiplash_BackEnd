@@ -25,6 +25,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     mimetype="application/json",
                     status_code=400,
                 )
+            
+            if not (is_number(numGames) and is_number(numScore)):
+                return func.HttpResponse(
+                    json.dumps({"result": False, "msg": "Input numbers as scores/games"}),
+                    mimetype="application/json",
+                    status_code=400,
+                )
 
             query = f"SELECT * FROM player p WHERE p.username = '{username}'"
             items = list(player_container.query_items(query, enable_cross_partition_query=True))
@@ -37,8 +44,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 )
             else:
                 player_data = items[0]
-                currentGames = safe_addition(player_data.get("games_played", 0), numGames)
-                currentScore = safe_addition(player_data.get("total_score", 0), numScore)
+                currentGames = player_data.get("games_played", 0) + numGames
+                currentScore = player_data.get("total_score", 0) + numScore
 
                 # You need to cast currentGames and currentScore to strings before concatenating with other strings for printing.
                 print(f"currentGames: {currentGames}")
@@ -69,14 +76,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             status_code=400,
         )
 
-def safe_addition(value1, value2):
-    # Try to convert both values to integers
-    try:
-        int_value1 = int(value1)
-        int_value2 = int(value2)
-        return int_value1 + int_value2
-    except ValueError:
-        # If it fails, then at least one value is a string, so convert both to strings
-        str_value1 = str(value1)
-        str_value2 = str(value2)
-        return str_value1 + str_value2
+    
+def is_number(value):
+    return isinstance(value, (int, float, complex))
