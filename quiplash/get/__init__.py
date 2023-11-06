@@ -13,7 +13,7 @@ prompt_container = database.get_container_client('prompt')
 def main(req: HttpRequest) -> HttpResponse:
     try:
         body = req.get_json()
-        players = body["player"]
+        players = body["players"]
         language = body["language"]
 
         result = []

@@ -32,7 +32,6 @@ def main(req: HttpRequest) -> HttpResponse:
         return HttpResponse(
             json.dumps({"result": False, "msg": "Username or password incorrect"}),
             mimetype="application/json",
-            status_code=401,
         )
 
     return HttpResponse(json.dumps({"result": True, "msg": "OK"}), mimetype="application/json")

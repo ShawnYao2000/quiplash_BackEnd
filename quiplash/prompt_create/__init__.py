@@ -42,7 +42,7 @@ def main(req:HttpRequest) ->HttpResponse:
 
         if detected_language not in supported_lang or (detected_language in supported_lang and confidence < 0.3):
             return HttpResponse(
-                json.dumps({"result": False, "msg": "Unsupported language or insufficient confidence"}),
+                json.dumps({"result": False, "msg": "Unsupported language"}),
                 mimetype="application/json",
                 status_code=200,
             )
