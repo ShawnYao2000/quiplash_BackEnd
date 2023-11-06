@@ -1,19 +1,17 @@
 import requests
 import json
 import uuid
-import os
-# 目标URL
 
+# 目标URL
+endpoint = "https://quiplashfunc.azurewebsites.net/api/"
 path_promptCreate = "prompt/create"
 path_playerLogin = "player/login"
 path_playerRegister = "player/register"
 path_playerUpdate = "player/update"
 path_utilsLearderboard = "utils/leaderboard"
 path_utilsGet = "utils/get"
-key = "nojxN7ZQZsTdQKUpK8D7mZVqV2DUSqYtIgiCxeEu5zuam8BBFY13SmZsS8WKyMDTZqRC4MBXeA5fACDbHUhapg=="
-endpoint = "https://sy1g21-quiplash.documents.azure.com:443/"
-#key = os.environ.get("COSMOS_DB_KEY")
-#endpoint = os.environ.get("COSMOS_DB_URL")
+key = "/?code=lmRiM4TtTWpcthRQJL3jWiieM--KvNsB-aEbafbHmq7HAzFulBqAdw=="
+
 
 def checkEqual1(json_list1 ,json_list2 ):
 
@@ -27,7 +25,7 @@ def checkEqual1(json_list1 ,json_list2 ):
         return True
     else:
         return False
-
+    
 def Getcheck1(url, payload, ans):
 
     response = requests.get(url, json=payload)
@@ -36,7 +34,7 @@ def Getcheck1(url, payload, ans):
         print(f"Failed to get response")
         print(response)
         return
-
+    
 
     a = json.loads(response.text)
 
@@ -55,7 +53,7 @@ def Postcheck(url, payload, ans):
         print(f"Failed to get response")
         print(response)
         return
-
+    
 
     a = json.loads(response.text)
 
@@ -72,7 +70,7 @@ def Getcheck(url, payload, ans):
         print(f"Failed to get response")
         print(response)
         return
-
+    
 
     a = json.loads(response.text)
 
@@ -236,31 +234,20 @@ def TestutilsLeaderboard():
     Getcheck(endpoint+path_utilsLearderboard+key, payload_utilsLeaderboard_2,ans_utilsLeaderboard_2)
 
 
-def main():
-    print("Starting tests...")
-    print("\n==============================================")
-    print("Testing promptCreate...")
-    TestpromptCreate()
-
-    print("\n==============================================")
-    print("Testing playerLogin...")
-    TestplayerLogin()
-
-    print("\n==============================================")
-    print("Testing utilsGet...")
-    TestutilsGet()
-
-    print("\n==============================================")
-    print("Testing utilsLeaderboard...")
-    TestutilsLeaderboard()
-    print("\n==============================================")
-    print("All tests completed!")
-
-
-if __name__ == "__main__":
-    main()
-
 #TestplayerLogin()
 #TestpromptCreate()
 #TestutilsGet()
 #TestutilsLeaderboard()
+
+def main():
+    # Run the test functions
+    TestplayerLogin()
+    TestpromptCreate()
+    TestutilsGet()
+    TestutilsLeaderboard()
+
+if __name__ == "__main__":
+    main()
+
+# Uncomment the line below to run the main function when the script is executed
+# main()
