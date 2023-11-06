@@ -18,9 +18,8 @@ def main(req: HttpRequest) -> HttpResponse:
         body = req.get_json()
         k = body["top"]
 
-        # SQL query to fetch the top k players
         query = f"""
-        SELECT TOP @k c.username, c.games_played, c.total_score
+        SELECT TOP {k} c.username, c.games_played, c.total_score
         FROM c
         ORDER BY c.total_score DESC, c.games_played ASC, c.username ASC
         """
@@ -29,11 +28,6 @@ def main(req: HttpRequest) -> HttpResponse:
 
         leaderboard = list(
             player_container.query_items(query, parameters=parameters, enable_cross_partition_query=True))
-
-        # Convert games_played and total_score to string if required
-        for player in leaderboard:
-            player["games_played"] = str(player["games_played"])
-            player["total_score"] = str(player["total_score"])
 
         return HttpResponse(
             json.dumps(leaderboard),
