@@ -38,7 +38,7 @@ def main(req: HttpRequest) -> HttpResponse:
                     for item in prompt_items:
                         prompt_container.delete_item(item, partition_key=item['username'])
                     return HttpResponse(
-                        json.dumps({"result": True, "msg": f"'{deletedPrompt}' prompts deleted"}),
+                        json.dumps({"result": True, "msg": f"{deletedPrompt} prompts deleted"}),
                         mimetype="application/json"
                     )
 
@@ -47,7 +47,7 @@ def main(req: HttpRequest) -> HttpResponse:
             if "word" in body:
                 word_to_delete = body["word"]
                 # Regex pattern for whole word match, case-sensitive, only in English text
-                pattern = fr'\b{re.escape(word_to_delete)}\b'
+                pattern = fr'(?<!\S){re.escape(word_to_delete)}(?!\S)'
 
                 # Query to fetch all prompts as Cosmos DB may not support regex within the query
                 prompts = list(prompt_container.query_items(
