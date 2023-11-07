@@ -14,8 +14,7 @@
 
     "COSMOS_DB_URL": "https://sy1g21-quiplash.documents.azure.com:443/",
     "COSMOS_DB_KEY": "nojxN7ZQZsTdQKUpK8D7mZVqV2DUSqYtIgiCxeEu5zuam8BBFY13SmZsS8WKyMDTZqRC4MBXeA5fACDbHUhapg==",
-    "TRANSLATOR_TEXT_LOCATION": "uksouth",
-    "AzureWebJobs.leaderboard.Disabled": "false"
+    "TRANSLATOR_TEXT_LOCATION": "uksouth"
   },
   "IsEncrypted": false
 }
